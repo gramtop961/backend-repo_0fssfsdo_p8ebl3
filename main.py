@@ -114,46 +114,99 @@ def get_cart_items(cart_id: str):
 
 @app.post("/seed")
 def seed_products():
-    """Quickly seed a minimal set of products for demo UI."""
+    """Seed a men's-focused catalog for ANOMIE — STANDARD DEVIATION."""
     try:
         samples = [
+            # Outerwear
             {
-                "title": "Glass No. 01",
-                "description": "Iridescent bottle tee in bone white.",
-                "price": 120.0,
+                "title": "Cropped Technical Bomber",
+                "description": "Matte nylon shell, cropped length, two-way zip, tonal hardware.",
+                "price": 480.0,
+                "category": "outerwear",
+                "image": "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            {
+                "title": "Wool Overcoat",
+                "description": "Double-faced wool, clean lapel, hidden placket, charcoal.",
+                "price": 780.0,
+                "category": "outerwear",
+                "image": "https://images.unsplash.com/photo-1516822003754-cca485356ecb?q=80&w=1600&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            # Tops
+            {
+                "title": "Heavyweight Boxy Tee",
+                "description": "26oz cotton, dropped shoulder, bone.",
+                "price": 95.0,
                 "category": "tops",
-                "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop",
+                "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
             },
             {
-                "title": "Standard Deviation Hoodie",
-                "description": "Oversized hoodie, brushed fleece.",
-                "price": 220.0,
-                "category": "hoodies",
-                "image": "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop",
+                "title": "Knit Polo",
+                "description": "Mercerized knit, open collar, ink.",
+                "price": 140.0,
+                "category": "tops",
+                "image": "https://images.unsplash.com/photo-1520975940163-5a6f8f125e8b?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
             },
+            # Bottoms
             {
-                "title": "Shadow Cargo",
-                "description": "Technical cargo trousers in obsidian.",
+                "title": "Pleated Wide Trousers",
+                "description": "Single pleat, fluid drape, crease-resistant, black.",
                 "price": 260.0,
                 "category": "bottoms",
-                "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop",
+                "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
             },
             {
-                "title": "Iridescent Cap",
-                "description": "Matte cap with subtle sheen logo.",
+                "title": "Raw Denim",
+                "description": "14oz selvedge, straight leg, indigo.",
+                "price": 220.0,
+                "category": "bottoms",
+                "image": "https://images.unsplash.com/photo-1503342394122-6b8499a3a540?q=80&w=1600&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            # Footwear
+            {
+                "title": "Leather Derby",
+                "description": "Full-grain calfskin, stacked heel, black.",
+                "price": 420.0,
+                "category": "footwear",
+                "image": "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1600&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            {
+                "title": "Tech Runner",
+                "description": "Ripstop and suede, Vibram sole, grey.",
+                "price": 360.0,
+                "category": "footwear",
+                "image": "https://images.unsplash.com/photo-1539185441755-769473a23570?q=80&w=1600&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            # Accessories
+            {
+                "title": "Calfskin Belt",
+                "description": "Polished edge, matte buckle, black.",
+                "price": 160.0,
+                "category": "accessories",
+                "image": "https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=1600&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            {
+                "title": "Ribbed Beanie",
+                "description": "Italian wool, onyx.",
                 "price": 80.0,
                 "category": "accessories",
-                "image": "https://images.unsplash.com/photo-1516478177764-9fe5bd7e9717?q=80&w=1200&auto=format&fit=crop",
+                "image": "https://images.unsplash.com/photo-1520975588854-6cdb91f1a6cf?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
             },
         ]
         inserted = []
         for s in samples:
             inserted.append(create_document("product", s))
-        return {"inserted": inserted}
+        return {"inserted": inserted, "count": len(inserted)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

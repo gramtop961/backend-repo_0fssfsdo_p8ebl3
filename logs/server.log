@@ -1,15 +1,15 @@
 INFO:     Will watch for changes in these directories: ['/home/workspace']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [258] using StatReload
-INFO:     Started server process [260]
+INFO:     Started reloader process [305] using StatReload
+INFO:     Started server process [307]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     172.20.0.1:45288 - "GET /products HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45302 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45288 - "GET /products HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45302 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45314 - "HEAD / HTTP/1.1" 405 Method Not Allowed
-INFO:     172.20.0.1:45302 - "GET /products HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45308 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45302 - "GET /products HTTP/1.1" 200 OK
-INFO:     172.20.0.1:45308 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:57176 - "HEAD / HTTP/1.1" 405 Method Not Allowed
+INFO:     172.20.0.1:57194 - "GET /products HTTP/1.1" 200 OK
+INFO:     172.20.0.1:57192 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:57194 - "GET /products HTTP/1.1" 200 OK
+INFO:     172.20.0.1:57206 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:47642 - "GET /products HTTP/1.1" 200 OK
+INFO:     172.20.0.1:47646 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK
+INFO:     172.20.0.1:47642 - "GET /products HTTP/1.1" 200 OK
+INFO:     172.20.0.1:47646 - "GET /cart/items?cart_id=cfd3942d-576f-4bcc-a1ec-8a9271a55185 HTTP/1.1" 200 OK

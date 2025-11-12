@@ -97,6 +97,7 @@ def get_cart_items(cart_id: str):
                     category=p.get("category"),
                     image=p.get("image"),
                     in_stock=p.get("in_stock", True),
+                    sizes=p.get("sizes"),
                 )
                 product_map[str(p["_id"])] = p_out
         out: List[CartItemOut] = []
@@ -125,6 +126,7 @@ def seed_products():
                 "category": "outerwear",
                 "image": "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["S", "M", "L"],
             },
             {
                 "title": "Wool Overcoat",
@@ -133,6 +135,7 @@ def seed_products():
                 "category": "outerwear",
                 "image": "https://images.unsplash.com/photo-1516822003754-cca485356ecb?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["M", "L", "XL"],
             },
             # Tops
             {
@@ -142,6 +145,7 @@ def seed_products():
                 "category": "tops",
                 "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["S", "M", "L", "XL"],
             },
             {
                 "title": "Knit Polo",
@@ -150,6 +154,7 @@ def seed_products():
                 "category": "tops",
                 "image": "https://images.unsplash.com/photo-1520975940163-5a6f8f125e8b?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["S", "M", "L"],
             },
             # Bottoms
             {
@@ -159,6 +164,7 @@ def seed_products():
                 "category": "bottoms",
                 "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["28", "30", "32", "34"],
             },
             {
                 "title": "Raw Denim",
@@ -167,6 +173,7 @@ def seed_products():
                 "category": "bottoms",
                 "image": "https://images.unsplash.com/photo-1503342394122-6b8499a3a540?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["28", "30", "32", "34", "36"],
             },
             # Footwear
             {
@@ -176,6 +183,7 @@ def seed_products():
                 "category": "footwear",
                 "image": "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["40", "41", "42", "43", "44"],
             },
             {
                 "title": "Tech Runner",
@@ -184,6 +192,7 @@ def seed_products():
                 "category": "footwear",
                 "image": "https://images.unsplash.com/photo-1539185441755-769473a23570?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": ["40", "41", "42", "43"],
             },
             # Accessories
             {
@@ -193,6 +202,7 @@ def seed_products():
                 "category": "accessories",
                 "image": "https://images.unsplash.com/photo-1520975661595-6453be3f7070?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": None,
             },
             {
                 "title": "Ribbed Beanie",
@@ -201,6 +211,7 @@ def seed_products():
                 "category": "accessories",
                 "image": "https://images.unsplash.com/photo-1520975588854-6cdb91f1a6cf?q=80&w=1600&auto=format&fit=crop",
                 "in_stock": True,
+                "sizes": None,
             },
         ]
         inserted = []

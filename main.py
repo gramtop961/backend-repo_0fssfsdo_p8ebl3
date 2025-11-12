@@ -1,8 +1,14 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from typing import List, Optional
+from bson import ObjectId
 
-app = FastAPI()
+from database import db, create_document, get_documents
+from schemas import Product, CartItem
+
+app = FastAPI(title="ANOMIE API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,17 +18,148 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+class ProductCreate(Product):
+    pass
+
+
+class ProductOut(Product):
+    id: str
+
+
+class CartItemCreate(CartItem):
+    pass
+
+
+class CartItemOut(CartItem):
+    id: str
+    product: Optional[ProductOut] = None
+
+
 @app.get("/")
 def read_root():
-    return {"message": "Hello from FastAPI Backend!"}
+    return {"brand": "ANOMIE", "sub": "STANDARD DEVIATION"}
 
-@app.get("/api/hello")
-def hello():
-    return {"message": "Hello from the backend API!"}
+
+@app.get("/schema")
+def get_schema_info():
+    return {"schemas": ["user", "product", "cartitem"]}
+
+
+@app.post("/products", response_model=dict)
+def create_product(product: ProductCreate):
+    try:
+        inserted_id = create_document("product", product)
+        return {"id": inserted_id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/products", response_model=List[ProductOut])
+def list_products(limit: int = 50, category: Optional[str] = None):
+    try:
+        query = {"category": category} if category else {}
+        docs = get_documents("product", query, limit)
+        out: List[ProductOut] = []
+        for d in docs:
+            d["id"] = str(d.get("_id"))
+            d.pop("_id", None)
+            out.append(ProductOut(**d))
+        return out
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/cart/items", response_model=dict)
+def add_to_cart(item: CartItemCreate):
+    try:
+        inserted_id = create_document("cartitem", item)
+        return {"id": inserted_id}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/cart/items", response_model=List[CartItemOut])
+def get_cart_items(cart_id: str):
+    try:
+        docs = get_documents("cartitem", {"cart_id": cart_id}, None)
+        # Hydrate with product info
+        product_ids = [ObjectId(d["product_id"]) for d in docs if d.get("product_id")]
+        product_map = {}
+        if product_ids:
+            prod_docs = list(db["product"].find({"_id": {"$in": product_ids}}))
+            for p in prod_docs:
+                p_out = ProductOut(
+                    id=str(p["_id"]),
+                    title=p.get("title"),
+                    description=p.get("description"),
+                    price=p.get("price"),
+                    category=p.get("category"),
+                    image=p.get("image"),
+                    in_stock=p.get("in_stock", True),
+                )
+                product_map[str(p["_id"])] = p_out
+        out: List[CartItemOut] = []
+        for d in docs:
+            cid = str(d.get("_id"))
+            d["id"] = cid
+            pid = d.get("product_id")
+            d.pop("_id", None)
+            product = product_map.get(pid) if pid else None
+            out.append(CartItemOut(**d, product=product))
+        return out
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/seed")
+def seed_products():
+    """Quickly seed a minimal set of products for demo UI."""
+    try:
+        samples = [
+            {
+                "title": "Glass No. 01",
+                "description": "Iridescent bottle tee in bone white.",
+                "price": 120.0,
+                "category": "tops",
+                "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            {
+                "title": "Standard Deviation Hoodie",
+                "description": "Oversized hoodie, brushed fleece.",
+                "price": 220.0,
+                "category": "hoodies",
+                "image": "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            {
+                "title": "Shadow Cargo",
+                "description": "Technical cargo trousers in obsidian.",
+                "price": 260.0,
+                "category": "bottoms",
+                "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop",
+                "in_stock": True,
+            },
+            {
+                "title": "Iridescent Cap",
+                "description": "Matte cap with subtle sheen logo.",
+                "price": 80.0,
+                "category": "accessories",
+                "image": "https://images.unsplash.com/photo-1516478177764-9fe5bd7e9717?q=80&w=1200&auto=format&fit=crop",
+                "in_stock": True,
+            },
+        ]
+        inserted = []
+        for s in samples:
+            inserted.append(create_document("product", s))
+        return {"inserted": inserted}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.get("/test")
 def test_database():
-    """Test endpoint to check if database is available and accessible"""
     response = {
         "backend": "✅ Running",
         "database": "❌ Not Available",
@@ -31,37 +168,28 @@ def test_database():
         "connection_status": "Not Connected",
         "collections": []
     }
-    
+
     try:
-        # Try to import database module
-        from database import db
-        
         if db is not None:
             response["database"] = "✅ Available"
             response["database_url"] = "✅ Configured"
             response["database_name"] = db.name if hasattr(db, 'name') else "✅ Connected"
             response["connection_status"] = "Connected"
-            
-            # Try to list collections to verify connectivity
             try:
                 collections = db.list_collection_names()
-                response["collections"] = collections[:10]  # Show first 10 collections
+                response["collections"] = collections[:10]
                 response["database"] = "✅ Connected & Working"
             except Exception as e:
                 response["database"] = f"⚠️  Connected but Error: {str(e)[:50]}"
         else:
             response["database"] = "⚠️  Available but not initialized"
-            
-    except ImportError:
-        response["database"] = "❌ Database module not found (run enable-database first)"
     except Exception as e:
         response["database"] = f"❌ Error: {str(e)[:50]}"
-    
-    # Check environment variables
-    import os
-    response["database_url"] = "✅ Set" if os.getenv("DATABASE_URL") else "❌ Not Set"
-    response["database_name"] = "✅ Set" if os.getenv("DATABASE_NAME") else "❌ Not Set"
-    
+
+    import os as _os
+    response["database_url"] = "✅ Set" if _os.getenv("DATABASE_URL") else "❌ Not Set"
+    response["database_name"] = "✅ Set" if _os.getenv("DATABASE_NAME") else "❌ Not Set"
+
     return response
 
 

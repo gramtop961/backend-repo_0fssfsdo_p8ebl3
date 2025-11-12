@@ -36,7 +36,18 @@ class Product(BaseModel):
     description: Optional[str] = Field(None, description="Product description")
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
+    image: Optional[str] = Field(None, description="Primary product image URL")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+class CartItem(BaseModel):
+    """
+    Cart items schema
+    Collection name: "cartitem" (lowercase of class name)
+    Each document represents a line item in a given cart.
+    """
+    cart_id: str = Field(..., description="Client-generated cart identifier (e.g., UUID)")
+    product_id: str = Field(..., description="Product ObjectId as string")
+    quantity: int = Field(1, ge=1, le=10, description="Quantity for the product")
 
 # Add your own schemas here:
 # --------------------------------------------------
